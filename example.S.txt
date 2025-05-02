@@ -1,0 +1,174 @@
+
+example.elf:     file format elf32-littleriscv
+
+
+Disassembly of section .init:
+
+08000000 <_start>:
+    /* Initialize GP and Stack Pointer SP */
+    .option push
+    .option norelax
+    .option pop
+    
+    la sp, _sp
+ 8000000:	18005117          	auipc	sp,0x18005
+ 8000004:	00010113          	mv	sp,sp
+
+    /* Load data section */
+    la a0, _data_lma
+ 8000008:	00000517          	auipc	a0,0x0
+ 800000c:	13050513          	addi	a0,a0,304 # 8000138 <_data_lma>
+    la a1, _data
+ 8000010:	18000597          	auipc	a1,0x18000
+ 8000014:	ff058593          	addi	a1,a1,-16 # 20000000 <__RAM_BASE>
+    la a2, _edata
+ 8000018:	18000617          	auipc	a2,0x18000
+ 800001c:	ff460613          	addi	a2,a2,-12 # 2000000c <s>
+    bgeu a1, a2, 2f
+ 8000020:	00c5fc63          	bgeu	a1,a2,8000038 <_start+0x38>
+1:
+    lw t0, (a0)
+ 8000024:	00052283          	lw	t0,0(a0)
+    sw t0, (a1)
+ 8000028:	0055a023          	sw	t0,0(a1)
+    addi a0, a0, 4
+ 800002c:	00450513          	addi	a0,a0,4
+    addi a1, a1, 4
+ 8000030:	00458593          	addi	a1,a1,4
+    bltu a1, a2, 1b
+ 8000034:	fec5e8e3          	bltu	a1,a2,8000024 <_start+0x24>
+2:
+    /* Clear bss section */
+    la a0, _bss_start
+ 8000038:	18000517          	auipc	a0,0x18000
+ 800003c:	fd450513          	addi	a0,a0,-44 # 2000000c <s>
+    la a1, _end
+ 8000040:	18000597          	auipc	a1,0x18000
+ 8000044:	fd858593          	addi	a1,a1,-40 # 20000018 <_end>
+    bgeu a0, a1, 2f
+ 8000048:	00b57863          	bgeu	a0,a1,8000058 <_start+0x58>
+1:
+    sw zero, (a0)
+ 800004c:	00052023          	sw	zero,0(a0)
+    addi a0, a0, 4
+ 8000050:	00450513          	addi	a0,a0,4
+    bltu a0, a1, 1b
+ 8000054:	feb56ce3          	bltu	a0,a1,800004c <_start+0x4c>
+
+2:
+    /* ===== Call Main Function  ===== */
+    /* argc = argv = 0 */
+    li a0, 0
+ 8000058:	00000513          	li	a0,0
+    li a1, 0
+ 800005c:	00000593          	li	a1,0
+    call main
+ 8000060:	008000ef          	jal	ra,8000068 <main>
+    
+1:
+    j 1b
+ 8000064:	0000006f          	j	8000064 <_start+0x64>
+
+Disassembly of section .text:
+
+08000068 <main>:
+extern int fun1(int x, int y, float z);
+extern int fun2(int x, int y, float z);
+
+/* main function */
+int main(void)
+{
+ 8000068:	ff010113          	addi	sp,sp,-16 # 20004ff0 <_end+0x4fd8>
+ 800006c:	00112623          	sw	ra,12(sp)
+	int i, d = 326;
+
+	s[0] = 20;
+ 8000070:	200007b7          	lui	a5,0x20000
+ 8000074:	00c78793          	addi	a5,a5,12 # 2000000c <s>
+ 8000078:	01400713          	li	a4,20
+ 800007c:	00e7a023          	sw	a4,0(a5)
+	s[1] = a;
+ 8000080:	20000737          	lui	a4,0x20000
+ 8000084:	00072703          	lw	a4,0(a4) # 20000000 <__RAM_BASE>
+ 8000088:	00e7a223          	sw	a4,4(a5)
+
+	for(i = 1; i < b; i++)
+ 800008c:	200007b7          	lui	a5,0x20000
+ 8000090:	0087a683          	lw	a3,8(a5) # 20000008 <b>
+ 8000094:	00100793          	li	a5,1
+ 8000098:	00d7dc63          	bge	a5,a3,80000b0 <main+0x48>
+		a += i;
+ 800009c:	00f70733          	add	a4,a4,a5
+	for(i = 1; i < b; i++)
+ 80000a0:	00178793          	addi	a5,a5,1
+ 80000a4:	fed79ce3          	bne	a5,a3,800009c <main+0x34>
+ 80000a8:	200007b7          	lui	a5,0x20000
+ 80000ac:	00e7a023          	sw	a4,0(a5) # 20000000 <__RAM_BASE>
+
+	d = fun2(d, a, f);
+ 80000b0:	200007b7          	lui	a5,0x20000
+ 80000b4:	0047a603          	lw	a2,4(a5) # 20000004 <f>
+ 80000b8:	200007b7          	lui	a5,0x20000
+ 80000bc:	0007a583          	lw	a1,0(a5) # 20000000 <__RAM_BASE>
+ 80000c0:	14600513          	li	a0,326
+ 80000c4:	05c000ef          	jal	ra,8000120 <fun2>
+	d += -20;
+	return d;
+}
+ 80000c8:	fec50513          	addi	a0,a0,-20
+ 80000cc:	00c12083          	lw	ra,12(sp)
+ 80000d0:	01010113          	addi	sp,sp,16
+ 80000d4:	00008067          	ret
+
+080000d8 <fun1>:
+int b = 60;
+int k;
+
+int fun1(int x, int y, float z)
+{
+	switch(y)
+ 80000d8:	02b00793          	li	a5,43
+ 80000dc:	00f58e63          	beq	a1,a5,80000f8 <fun1+0x20>
+ 80000e0:	02d00793          	li	a5,45
+ 80000e4:	02f58a63          	beq	a1,a5,8000118 <fun1+0x40>
+	{
+		case '+':  	b += 2; break;
+		case '-':	x -= 3; break;
+		default:	k = y<<1;
+ 80000e8:	00159593          	slli	a1,a1,0x1
+ 80000ec:	200007b7          	lui	a5,0x20000
+ 80000f0:	00b7aa23          	sw	a1,20(a5) # 20000014 <k>
+ 80000f4:	0140006f          	j	8000108 <fun1+0x30>
+		case '+':  	b += 2; break;
+ 80000f8:	20000737          	lui	a4,0x20000
+ 80000fc:	00872783          	lw	a5,8(a4) # 20000008 <b>
+ 8000100:	00278793          	addi	a5,a5,2
+ 8000104:	00f72423          	sw	a5,8(a4)
+	}
+
+	return b + x;
+ 8000108:	200007b7          	lui	a5,0x20000
+ 800010c:	0087a783          	lw	a5,8(a5) # 20000008 <b>
+}
+ 8000110:	00f50533          	add	a0,a0,a5
+ 8000114:	00008067          	ret
+		case '-':	x -= 3; break;
+ 8000118:	ffd50513          	addi	a0,a0,-3
+ 800011c:	fedff06f          	j	8000108 <fun1+0x30>
+
+08000120 <fun2>:
+
+int fun2(int x, int y, float z)
+{
+	if(x < y)
+ 8000120:	00b54863          	blt	a0,a1,8000130 <fun2+0x10>
+		return 256;
+	else
+		return k;
+ 8000124:	200007b7          	lui	a5,0x20000
+ 8000128:	0147a503          	lw	a0,20(a5) # 20000014 <k>
+ 800012c:	00008067          	ret
+		return 256;
+ 8000130:	10000513          	li	a0,256
+}
+ 8000134:	00008067          	ret

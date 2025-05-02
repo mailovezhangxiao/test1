@@ -1,0 +1,159 @@
+
+Allocating common symbols
+Common symbol       size              file
+
+k                   0x4               fun.o
+s                   0x8               main.o
+
+Memory Configuration
+
+Name             Origin             Length             Attributes
+flash            0x0000000008000000 0x0000000000020000 axrl !w
+ram              0x0000000020000000 0x0000000000005000 axw !rl
+*default*        0x0000000000000000 0xffffffffffffffff
+
+Linker script and memory map
+
+LOAD startup.o
+LOAD main.o
+LOAD fun.o
+LOAD d:/nucleistudio_ide_202102-win64/nucleistudio/toolchain/gcc/bin/../lib/gcc/riscv-nuclei-elf/9.2.0/rv32i/ilp32\libgcc.a
+START GROUP
+LOAD d:/nucleistudio_ide_202102-win64/nucleistudio/toolchain/gcc/bin/../lib/gcc/riscv-nuclei-elf/9.2.0/../../../../riscv-nuclei-elf/lib/rv32i/ilp32\libc.a
+LOAD d:/nucleistudio_ide_202102-win64/nucleistudio/toolchain/gcc/bin/../lib/gcc/riscv-nuclei-elf/9.2.0/../../../../riscv-nuclei-elf/lib/rv32i/ilp32\libgloss.a
+END GROUP
+LOAD d:/nucleistudio_ide_202102-win64/nucleistudio/toolchain/gcc/bin/../lib/gcc/riscv-nuclei-elf/9.2.0/rv32i/ilp32\libgcc.a
+                0x0000000008000000                __ROM_BASE = 0x8000000
+                0x0000000000020000                __ROM_SIZE = 0x20000
+                0x0000000020000000                __RAM_BASE = 0x20000000
+                0x0000000000005000                __RAM_SIZE = 0x5000
+                0x0000000000000800                __STACK_SIZE = 0x800
+                0x0000000000000800                __HEAP_SIZE = 0x800
+                0x0000000000000800                __STACK_SIZE = DEFINED (__STACK_SIZE)?__STACK_SIZE:0x800
+
+.init           0x0000000008000000       0x68
+ *(.vtable)
+ *(SORT_NONE(.init))
+ .init          0x0000000008000000       0x68 startup.o
+                0x0000000008000000                _start
+                0x0000000008000068                . = ALIGN (0x4)
+
+.text           0x0000000008000068       0xd0
+ *(.text.unlikely .text.unlikely.*)
+ *(.text.startup .text.startup.*)
+ *(.text .text.*)
+ .text          0x0000000008000068        0x0 startup.o
+ .text          0x0000000008000068       0x70 main.o
+                0x0000000008000068                main
+ .text          0x00000000080000d8       0x60 fun.o
+                0x00000000080000d8                fun1
+                0x0000000008000120                fun2
+ *(.gnu.linkonce.t.*)
+                0x0000000008000138                . = ALIGN (0x4)
+
+.rela.dyn       0x0000000008000138        0x0
+ .rela.init     0x0000000008000138        0x0 startup.o
+ .rela.text     0x0000000008000138        0x0 startup.o
+
+.rodata         0x0000000008000138        0x0
+ *(.rdata)
+ *(.rodata .rodata.*)
+                0x0000000008000138                . = ALIGN (0x4)
+                0x0000000008000138                PROVIDE (_data_lma = .)
+
+.data           0x0000000020000000        0xc load address 0x0000000008000138
+                0x0000000020000000                . = ALIGN (0x4)
+                0x0000000020000000                PROVIDE (_data = .)
+ *(.data .data.*)
+ .data          0x0000000020000000        0x0 startup.o
+ .data          0x0000000020000000        0x0 main.o
+ .data          0x0000000020000000        0x0 fun.o
+ *(.gnu.linkonce.d.*)
+                0x0000000020000000                . = ALIGN (0x8)
+                [!provide]                        PROVIDE (__global_pointer$ = (. + 0x800))
+ *(.sdata .sdata.* .sdata*)
+ .sdata         0x0000000020000000        0x8 main.o
+                0x0000000020000000                a
+                0x0000000020000004                f
+ .sdata         0x0000000020000008        0x4 fun.o
+                0x0000000020000008                b
+ *(.gnu.linkonce.s.*)
+                0x000000002000000c                . = ALIGN (0x4)
+                0x000000002000000c                PROVIDE (_edata = .)
+                0x000000002000000c                PROVIDE (_bss_start = .)
+
+.bss            0x000000002000000c        0xc
+ *(.sbss*)
+ *(.gnu.linkonce.sb.*)
+ *(.bss .bss.*)
+ .bss           0x000000002000000c        0x0 startup.o
+ .bss           0x000000002000000c        0x0 main.o
+ .bss           0x000000002000000c        0x0 fun.o
+ *(.gnu.linkonce.b.*)
+ *(COMMON)
+ COMMON         0x000000002000000c        0x8 main.o
+                0x000000002000000c                s
+ COMMON         0x0000000020000014        0x4 fun.o
+                0x0000000020000014                k
+                0x0000000020000018                . = ALIGN (0x4)
+                0x0000000020000018                . = ALIGN (0x4)
+                0x0000000020000018                PROVIDE (_end = .)
+
+.stack          0x0000000020004800      0x800 load address 0x0000000020000018
+                [!provide]                        PROVIDE (_heap_end = .)
+                0x0000000000000800                . = __STACK_SIZE
+ *fill*         0x0000000020004800      0x800 
+                0x0000000020005000                PROVIDE (_sp = .)
+OUTPUT(example.elf elf32-littleriscv)
+
+.riscv.attributes
+                0x0000000000000000       0x1c
+ .riscv.attributes
+                0x0000000000000000       0x1a startup.o
+ .riscv.attributes
+                0x000000000000001a       0x1c main.o
+ .riscv.attributes
+                0x0000000000000036       0x1c fun.o
+
+.comment        0x0000000000000000       0x11
+ .comment       0x0000000000000000       0x11 main.o
+                                         0x12 (size before relaxing)
+ .comment       0x0000000000000011       0x12 fun.o
+
+.debug_line     0x0000000000000000      0x28f
+ .debug_line    0x0000000000000000       0xac startup.o
+ .debug_line    0x00000000000000ac       0xfa main.o
+ .debug_line    0x00000000000001a6       0xe9 fun.o
+
+.debug_info     0x0000000000000000      0x1d3
+ .debug_info    0x0000000000000000       0x26 startup.o
+ .debug_info    0x0000000000000026       0xd9 main.o
+ .debug_info    0x00000000000000ff       0xd4 fun.o
+
+.debug_abbrev   0x0000000000000000      0x168
+ .debug_abbrev  0x0000000000000000       0x14 startup.o
+ .debug_abbrev  0x0000000000000014       0xbb main.o
+ .debug_abbrev  0x00000000000000cf       0x99 fun.o
+
+.debug_aranges  0x0000000000000000       0x60
+ .debug_aranges
+                0x0000000000000000       0x20 startup.o
+ .debug_aranges
+                0x0000000000000020       0x20 main.o
+ .debug_aranges
+                0x0000000000000040       0x20 fun.o
+
+.debug_str      0x0000000000000000       0xa8
+ .debug_str     0x0000000000000000       0x3d startup.o
+ .debug_str     0x000000000000003d       0x60 main.o
+                                         0x87 (size before relaxing)
+ .debug_str     0x000000000000009d        0xb fun.o
+                                         0x79 (size before relaxing)
+
+.debug_loc      0x0000000000000000       0xea
+ .debug_loc     0x0000000000000000       0x4d main.o
+ .debug_loc     0x000000000000004d       0x9d fun.o
+
+.debug_frame    0x0000000000000000       0x5c
+ .debug_frame   0x0000000000000000       0x2c main.o
+ .debug_frame   0x000000000000002c       0x30 fun.o
