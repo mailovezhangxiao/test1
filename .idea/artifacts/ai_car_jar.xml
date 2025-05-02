@@ -1,0 +1,20 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="ai car:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/ai_car_jar</output-path>
+    <root id="archive" name="ai car.jar">
+      <element id="module-output" name="ai car" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/JSON-java-20250107/gradle/wrapper/gradle-wrapper.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/javafx-sdk-17.0.14/lib/javafx-swt.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/javafx-sdk-17.0.14/lib/javafx.web.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/javafx-sdk-17.0.14/lib/javafx.base.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/javafx-sdk-17.0.14/lib/javafx.fxml.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/javafx-sdk-17.0.14/lib/javafx.media.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/javafx-sdk-17.0.14/lib/javafx.swing.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/javafx-sdk-17.0.14/lib/javafx.controls.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/javafx-sdk-17.0.14/lib/javafx.graphics.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="D:/Download1/dashscope-sdk-java-2.19.1.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="D:/Download1/org.json-1.6-20240205.jar" path-in-jar="/" />
+      <element id="library" level="project" name="lib1" />
+    </root>
+  </artifact>
+</component>

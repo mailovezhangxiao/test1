@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="zh">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="initial-scale=1.0, user-scalable=no, width=device-width" />
+  <title>带搜索功能的驾车路线地图</title>
+  <style>
+    html, body, #container {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+    }
+    .input-card {
+      position: fixed;
+      background: rgba(255, 255, 255, 0.9);
+      padding: 8px;
+      border-radius: 4px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.3);
+      z-index: 1000;
+      width: 200px;
+    }
+    .input-item {
+      margin-bottom: 6px;
+      font-size: 14px;
+    }
+    #panel {
+      position: fixed;
+      top: 10px;
+      right: 10px;
+      width: 280px;
+      max-height: 90%;
+      overflow-y: auto;
+      background: #fff;
+      border-radius: 4px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.3);
+      z-index: 1000;
+    }
+  </style>
+  <script>
+    window._AMapSecurityConfig = {
+      securityJsCode: "7c5b72ea0c9f42acb91aaa97a333c47e"
+    };
+  </script>
+  <script src="https://webapi.amap.com/maps?v=2.0&key=14c3ca99db48217201847f96a98501c0"></script>
+</head>
+<body>
+<div id="container"></div>
+
+<!-- 控件切换区域 -->
+<div class="input-card" style="top: 10px; left: 10px;">
+  <div class="input-item"><label><input type="checkbox" id="toggleScale" /> 比例尺</label></div>
+  <div class="input-item"><label><input type="checkbox" id="toggleToolBar" /> 工具条</label></div>
+  <div class="input-item"><label><input type="checkbox" id="toggleControlBar" /> 方向盘控件</label></div>
+  <div class="input-item"><label><input type="checkbox" id="toggleOverView" checked /> 鹰眼</label></div>
+  <div class="input-item"><label><input type="checkbox" id="togglePanel" checked /> 路线详情</label></div>
+</div>
+
+<!-- 路线搜索区域 -->
+<div class="input-card" style="top: 230px; left: 10px;">
+  <div class="input-item"><strong>起点：</strong></div>
+  <div class="input-item"><input type="text" id="startKeyword" placeholder="起点关键词" style="width:100%;" /></div>
+  <div class="input-item"><input type="text" id="startCity" placeholder="起点城市" style="width:100%;" /></div>
+  <div class="input-item"><strong>终点：</strong></div>
+  <div class="input-item"><input type="text" id="endKeyword" placeholder="终点关键词" style="width:100%;" /></div>
+  <div class="input-item"><input type="text" id="endCity" placeholder="终点城市" style="width:100%;" /></div>
+  <div class="input-item"><button id="searchRoute" style="width:100%;">开始规划</button></div>
+</div>
+
+<!-- 路线详情面板 -->
+<div id="panel"></div>
+
+<script>
+  window.onload = () => {
+    const map = new AMap.Map("container", { zoom: 12 });
+
+    AMap.plugin(["AMap.Scale", "AMap.ToolBar", "AMap.ControlBar", "AMap.HawkEye", "AMap.Driving"], () => {
+      const scale = new AMap.Scale({ visible: false });
+      const toolBar = new AMap.ToolBar({ visible: false });
+      const controlBar = new AMap.ControlBar({ visible: false });
+      const overView = new AMap.HawkEye({ visible: true });
+
+      map.addControl(scale);
+      map.addControl(toolBar);
+      map.addControl(controlBar);
+      map.addControl(overView);
+
+      document.getElementById("toggleScale").onchange = e => e.target.checked ? scale.show() : scale.hide();
+      document.getElementById("toggleToolBar").onchange = e => e.target.checked ? toolBar.show() : toolBar.hide();
+      document.getElementById("toggleControlBar").onchange = e => e.target.checked ? controlBar.show() : controlBar.hide();
+      document.getElementById("toggleOverView").onchange = e => e.target.checked ? overView.show() : overView.hide();
+      document.getElementById("togglePanel").onchange = e => {
+        document.getElementById("panel").style.display = e.target.checked ? "block" : "none";
+      };
+
+      const driving = new AMap.Driving({
+        map,
+        panel: "panel",
+        policy: AMap.DrivingPolicy.LEAST_TIME,
+      });
+
+      // 默认路线
+      driving.search([
+        { keyword: "武汉理工大学南湖校区", city: "武汉" },
+        { keyword: "武汉大学", city: "武汉" }
+      ]);
+
+      // 用户自定义路线
+      document.getElementById("searchRoute").onclick = () => {
+        const startKeyword = document.getElementById("startKeyword").value.trim();
+        const startCity = document.getElementById("startCity").value.trim();
+        const endKeyword = document.getElementById("endKeyword").value.trim();
+        const endCity = document.getElementById("endCity").value.trim();
+
+        if (!startKeyword || !startCity || !endKeyword || !endCity) {
+          alert("请输入完整的起点和终点信息");
+          return;
+        }
+
+        const points = [
+          { keyword: startKeyword, city: startCity },
+          { keyword: endKeyword, city: endCity }
+        ];
+
+        driving.search(points, (status, result) => {
+          if (status === "complete") {
+            console.log("✅ 路线规划成功");
+          } else {
+            console.error("❌ 路线规划失败：", result);
+            alert("路线规划失败，请检查输入信息");
+          }
+        });
+      };
+    });
+  };
+</script>
+</body>
+</html>

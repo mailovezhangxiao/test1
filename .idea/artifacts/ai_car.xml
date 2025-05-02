@@ -1,0 +1,10 @@
+<component name="ArtifactManager">
+  <artifact type="javafx" name="ai car">
+    <output-path>$PROJECT_DIR$/out/artifacts/ai_car</output-path>
+    <root id="root">
+      <element id="archive" name="ai_car.jar">
+        <element id="module-output" name="ai car" />
+      </element>
+    </root>
+  </artifact>
+</component>

@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="lib1">
+    <CLASSES>
+      <root url="file://$PROJECT_DIR$/javafx-sdk-17.0.14/lib" />
+      <root url="jar://$PROJECT_DIR$/src/org.json-1.6-20240205.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="file://$PROJECT_DIR$/JSON-java-20250107/src/main/java" />
+    </SOURCES>
+    <jarDirectory url="file://$PROJECT_DIR$/javafx-sdk-17.0.14/lib" recursive="false" />
+  </library>
+</component>
